@@ -19,4 +19,4 @@ def build_poly(x, degree):
     
     return poly
     # ***************************************************
-    raise NotImplementedError
+    #raise NotImplementedError
