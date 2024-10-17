@@ -3,8 +3,9 @@
 
 Stochastic Gradient Descent
 """
-from helpers import batch_iter
+#from helpers import batch_iter
 from costs import compute_loss
+import numpy as np
 
 
 def compute_stoch_gradient(y, tx, w):
@@ -22,8 +23,20 @@ def compute_stoch_gradient(y, tx, w):
     # ***************************************************
     # INSERT YOUR CODE HERE
     # TODO: implement stochastic gradient computation. It's the same as the usual gradient.
+
+    N = y.shape[0]
+
+    # Compute the predictions
+    predictions = tx @ w  # Shape (N,)
+
+    # Compute the errors
+    errors = y - predictions  # Shape (N,)
+
+    # Compute the gradient
+    gradient = - (1 / N) * (tx.T @ errors)  # Shape (2,)
+    return gradient
     # ***************************************************
-    raise NotImplementedError
+    #raise NotImplementedError
 
 
 def stochastic_gradient_descent(y, tx, initial_w, batch_size, max_iters, gamma):
@@ -51,8 +64,20 @@ def stochastic_gradient_descent(y, tx, initial_w, batch_size, max_iters, gamma):
         # ***************************************************
         # INSERT YOUR CODE HERE
         # TODO: implement stochastic gradient descent.
+
+        batch_indices = np.random.choice(y.shape[0], batch_size, replace = False)
+        x_batch = tx[batch_indices]
+        y_batch = y[batch_indices]
+
+        gradient = compute_stoch_gradient(y_batch,x_batch, w)
+        loss = compute_loss(y_batch, x_batch, w)
+
+        w = w - gamma*gradient
+
+        losses.append(loss)
+        ws.append(w)
         # ***************************************************
-        raise NotImplementedError
+        #raise NotImplementedError
 
         print(
             "SGD iter. {bi}/{ti}: loss={l}, w0={w0}, w1={w1}".format(
