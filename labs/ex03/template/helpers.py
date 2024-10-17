@@ -12,34 +12,45 @@ def load_data():
     return x, y
 
 
+import numpy as np
+
+import numpy as np
+
 def load_data_from_ex02(sub_sample=True, add_outlier=False):
     """Load data and convert it to the metric system."""
     path_dataset = "height_weight_genders.csv"
-    data = np.genfromtxt(path_dataset, delimiter=",", skip_header=1, usecols=[1, 2])
+    
+    # Load height and weight data
+    data = np.genfromtxt(path_dataset, delimiter=",", skip_header=1, usecols=[1, 2], encoding='utf-8')
     height = data[:, 0]
     weight = data[:, 1]
+    
+    # Load gender data
     gender = np.genfromtxt(
         path_dataset,
         delimiter=",",
         skip_header=1,
         usecols=[0],
-        converters={0: lambda x: 0 if b"Male" in x else 1},
+        converters={0: lambda x: 0 if x == "Male" else 1},  # No need to decode
+        encoding='utf-8'  # Ensure strings are read as UTF-8
     )
-    # Convert to metric system
-    height *= 0.025
-    weight *= 0.454
 
-    # sub-sample
+    # Convert to metric system
+    height *= 0.025  # Convert height from inches to meters
+    weight *= 0.454  # Convert weight from pounds to kg
+
+    # Sub-sample if needed
     if sub_sample:
         height = height[::50]
         weight = weight[::50]
 
     if add_outlier:
-        # outlier experiment
-        height = np.concatenate([height, [1.1, 1.2]])
-        weight = np.concatenate([weight, [51.5 / 0.454, 55.3 / 0.454]])
+        # Outlier experiment
+        height = np.concatenate([height, [1.1, 1.2]])  # Adding outliers in meters
+        weight = np.concatenate([weight, [51.5 / 0.454, 55.3 / 0.454]])  # Adding outliers in kg
 
     return height, weight, gender
+
 
 
 def standardize(x):
