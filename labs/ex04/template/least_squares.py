@@ -26,5 +26,19 @@ def least_squares(y, tx):
     # COPY YOUR CODE FROM EX03 HERE
     # least squares: TODO
     # returns optimal weights, MSE
+    N = y.shape[0]
+    
+    # Compute optimal weights using least squares formula
+    XTX = np.dot(tx.T, tx)  # Compute X^T * X
+    XTy = np.dot(tx.T, y)   # Compute X^T * y
+    w = np.linalg.solve(XTX, XTy)  # Solve for optimal weights
+
+    # Compute predictions based on optimal weights
+    y_pred = np.dot(tx, w)  # X * w
+    
+    # Compute mean squared error (MSE)
+    mse = (1 / N) * np.sum((y - y_pred) ** 2)  # Mean squared error
+    
+    return w, mse
     # ***************************************************
     raise NotImplementedError
